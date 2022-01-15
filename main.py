@@ -1,6 +1,6 @@
 import helpers as h
 import sys
-print("Welcome to Scratch Spam!")
+print("Welcome to Scratch Spam for Python 3!")
 h.HorizontalPrintBreak()
 print("Importing modules...")
 try:
