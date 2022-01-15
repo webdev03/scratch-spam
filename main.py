@@ -1,14 +1,57 @@
+""" INIT VARS """
+MODES = [
+  {
+    "name": "Contains",
+    "desc": "All posts containing the specified string will be shown."
+  },
+  {
+    "name": "Regex",
+    "desc": "Give a regex to test"
+  },
+  {
+    "name": "Matcher ALPHA",
+    "desc": "does nothing for now"
+  }
+]
+
 import helpers as h
 import sys
 print("Welcome to Scratch Spam for Python 3!")
-h.HorizontalPrintBreak()
 print("Importing modules...")
+
+
 try:
   import requests
 except ImportError:
   print("Hey! You need to have requests installed for this to work.")
   print("MAC: pip3 install requests")
   sys.exit()
-print("Base modules successfully imported!")
+
+try:
+  import colorama
+  colorama.init(autoreset=True)
+except ImportError:
+  print("Hey! You need to have colorama installed for this to work properly.")
+  print("MAC: pip3 install colorama")
+  sys.exit()
+
+
+print(colorama.Fore.GREEN + "Base modules successfully imported!")
 h.HorizontalPrintBreak()
-print("Scratch Spam saves you from spam.")
+user = input(colorama.Fore.BLUE + "Which user would you like to search for spam? ")
+profile_req = requests.get(f"https://api.scratch.mit.edu/users/{user}/")
+if not profile_req.ok:
+  print(colorama.Fore.RED +"An error has occurred.")
+  sys.exit()
+print(colorama.Fore.GREEN + "User exists!")
+h.HorizontalPrintBreak()
+print("Choose your mode:")
+print(colorama.Style.RESET_ALL)
+c = 1
+for i in MODES:
+  print(f"{c}: {i['name']} - {i['desc']}")
+  c += 1
+print()
+mode_num = int(input(colorama.Fore.YELLOW + "Enter in your mode number: "))
+comments_html = requests.get(f"https://scratch.mit.edu/site-api/comments/user/{user}/?page=1").text
+h.MyHTMLParser.feed(comments_html)
