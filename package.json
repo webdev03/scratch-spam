@@ -1,0 +1,19 @@
+{
+  "name": "scratch-spam",
+  "version": "0.1.2",
+  "description": "Scratch spam protection",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webdev03/scratch-spam.git"
+  },
+  "author": "webdev03 (Devarsh)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/webdev03/scratch-spam/issues"
+  },
+  "homepage": "https://github.com/webdev03/scratch-spam#readme"
+}
