@@ -35,6 +35,13 @@ except ImportError:
   print("MAC: pip3 install colorama")
   sys.exit()
 
+try:
+  from bs4 import BeautifulSoup
+except ImportError:
+  print("Hey! For parsing, you need to have Beautiful Soup 4 installed for this to work properly.")
+  print("MAC: pip3 install beautifulsoup4")
+  sys.exit()
+
 
 print(colorama.Fore.GREEN + "Base modules successfully imported!")
 h.HorizontalPrintBreak()
@@ -54,4 +61,5 @@ for i in MODES:
 print()
 mode_num = int(input(colorama.Fore.YELLOW + "Enter in your mode number: "))
 comments_html = requests.get(f"https://scratch.mit.edu/site-api/comments/user/{user}/?page=1").text
-h.MyHTMLParser.feed(comments_html)
+soup = BeautifulSoup(comments_html, "html.parser")
+print(h.get_comments(user))
