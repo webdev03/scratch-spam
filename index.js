@@ -43,7 +43,7 @@ const print = (query) => console.log(query);
   print("Starting checking...");
   comments.forEach((comment) => {
     // RTL override!
-    if (comment.content.includes("\u202E") || comment.content.includes("\u200B")) {
+    if (comment.content.includes("\u202E") || comment.content.includes("\u200B") || comment.content.includes("\u202D")) {
       print(`${comment.username} posted "${comment.content}" which includes a disallowed char/string.`)
     }
   });
