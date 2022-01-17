@@ -26,7 +26,7 @@ const print = (query) => console.log(query);
   const dom = new JSDOM(commentHTML);
   const items = dom.window.document.getElementsByClassName("top-level-reply");
 
-  const comments = [];
+  let comments = [];
   for(let elID in items) {
     const element = items[elID];
     if (typeof element == "function") break;
