@@ -44,26 +44,29 @@ class ScratchSession {
 			";";
 	}
 	async deleteComment(id) {
-		const delFetch = await fetch("https://scratch.mit.edu/site-api/comments/user/god286/del/", {
-			method: "POST",
-			body: JSON.stringify({
-				id: id.toString(),
-			}),
-			headers: {
-				"x-csrftoken": this.csrfToken,
-        "X-Token": this.token,
-				"x-requested-with": "XMLHttpRequest",
-				Cookie: this.cookieSet,
-        
-				referer: "https://scratch.mit.edu",
-				"user-agent": "Mozilla/5.0 ScratchSpamProtection",
+		const delFetch = await fetch(
+			"https://scratch.mit.edu/site-api/comments/user/god286/del/",
+			{
+				method: "POST",
+				body: JSON.stringify({
+					id: id.toString(),
+				}),
+				headers: {
+					"x-csrftoken": this.csrfToken,
+					"X-Token": this.token,
+					"x-requested-with": "XMLHttpRequest",
+					Cookie: this.cookieSet,
+
+					referer: "https://scratch.mit.edu",
+					"user-agent": "Mozilla/5.0 ScratchSpamProtection",
+				},
 			}
-		});
-    if (!delFetch.ok) {
-      console.log(delFetch.status, await delFetch.text())
-      throw new Error("Error deleting comment.");
-    }
-    return delFetch.status;
+		);
+		if (!delFetch.ok) {
+			console.log(delFetch.status, await delFetch.text());
+			throw new Error("Error deleting comment.");
+		}
+		return delFetch.status;
 	}
 }
 
