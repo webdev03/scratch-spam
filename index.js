@@ -24,12 +24,12 @@ const print = (query) => console.log(query);
 	}
   const commentHTML = await commentFetch.text();
   const dom = new JSDOM(commentHTML);
-  const items = dom.window.document.getElementsByClassName("top-level-reply")
+  const items = dom.window.document.getElementsByClassName("top-level-reply");
   for(let elID in items) {
     const element = items[elID];
     if (typeof element == "function") break;
     const commentPoster = element.getElementsByClassName("comment")[0].getElementsByTagName("a")[0].getAttribute('data-comment-user')
-    print(`Current Comment Poster: ${commentPoster}`)
   };
+  print(`Found ${items.length} comments!`)
 	rl.close();
 })();
