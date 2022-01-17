@@ -2,10 +2,11 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const readline = require("readline");
+const fs = require("fs")
 const fetch = require("cross-fetch");
 const { JSDOM } = require("jsdom");
 const { ScratchSession } = require("./auth.js");
-const disallowed = require("./disallow.json");
+const disallowed = JSON.parse(fs.readFileSync("disallow.json", "utf-8"));
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
