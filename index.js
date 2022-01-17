@@ -40,15 +40,25 @@ const print = (query) => console.log(query);
 			content: commentContent,
 		});
 	}
-	print(`Found ${comments.length} comments!`);
+	print(`Found ${comments.length} comment thread starters!`);
   print("Starting checking...");
+
+  let badComments = [];
   comments.forEach((comment) => {
     disallowed.forEach(element => {
       if (comment.content.includes(element)) {
-        print(`${comment.username} posted "${comment.content}" which includes a disallowed char/string.`)
-      }
+        print(`${comment.username} posted "${comment.content}" which includes a disallowed char/string.`);
+        badComments.push(comment);
+      };
     });
   });
-
+  print(`${badComments.length} bad comment(s) found!`)
+  print("Please review the logs above to check if you would like to delete comments.")
+  if(!((await ask("Ready to delete all comments? This may be a destructive action! (y/N) ")).toLowerCase() == "y")) {
+    print("You can always restart the script again if you would like.")
+    rl.close();
+    return;
+  }
+  print("Getting ready to get rid of comments:")
 	rl.close();
 })();
