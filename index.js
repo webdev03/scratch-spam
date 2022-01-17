@@ -25,10 +25,22 @@ const print = (query) => console.log(query);
   const commentHTML = await commentFetch.text();
   const dom = new JSDOM(commentHTML);
   const items = dom.window.document.getElementsByClassName("top-level-reply");
+
+  const comments = [];
   for(let elID in items) {
     const element = items[elID];
     if (typeof element == "function") break;
-    const commentPoster = element.getElementsByClassName("comment")[0].getElementsByTagName("a")[0].getAttribute('data-comment-user')
+    const commentID = element.getElementsByClassName("comment")[0].id;
+    const commentPoster = element.getElementsByClassName("comment")[0].getElementsByTagName("a")[0].getAttribute('data-comment-user');
+    const commentContent = element.getElementsByClassName("comment")[0].getElementsByClassName("info")[0].getElementsByClassName("content")[0].innerHTML.trim();
+
+    comments.push(
+      {
+        id: commentID,
+        username: commentPoster,
+        content: commentContent
+      }
+    );
   };
   print(`Found ${items.length} comments!`)
 	rl.close();
