@@ -1,6 +1,10 @@
+const dotenv = require("dotenv");
+dotenv.config();
+
 const readline = require("readline");
 const fetch = require("cross-fetch");
 const { JSDOM } = require("jsdom");
+const { ScratchSession } = require("./auth.js");
 const disallowed = require("./disallow.json");
 const rl = readline.createInterface({
 	input: process.stdin,
@@ -59,6 +63,9 @@ const print = (query) => console.log(query);
     rl.close();
     return;
   }
-  print("Getting ready to get rid of comments...")
+  print("Getting ready to get rid of comments...");
+  const session = new ScratchSession();
+  await session.init(process.env['SCRATCH_USERNAME'], process.env['SCRATCH_PASSWORD']);
+  print("Logged in!")
 	rl.close();
 })();
