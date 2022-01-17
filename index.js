@@ -10,22 +10,17 @@ const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
-// helpers
-const ask = (query) => new Promise((resolve) => rl.question(query, resolve));
-const print = (query) => console.log(query);
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-// main code
-(async () => {
-  print(`Scratch Spam v${require("./package.json").version}`);
-  const userToCheck = await ask("What user would you like to check for spam? ");
+
+const getComments = async(user, page = 1) => {
   const commentFetch = await fetch(
-    `https://scratch.mit.edu/site-api/comments/user/${userToCheck}/?page=1`
+    `https://scratch.mit.edu/site-api/comments/user/${user}/?page=${page}`
   );
   if (!commentFetch.ok) {
-    print(commentFetch);
-    console.log("! Error in fetching comments.");
-    rl.close();
-    return;
+    if (page == 1) {
+      throw new Error("! Error in fetching comments")
+    } else {
+      return [];
+    }
   }
   const commentHTML = await commentFetch.text();
   const dom = new JSDOM(commentHTML);
@@ -52,7 +47,43 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
       apiID: commentID.substring(9),
     });
   }
-  print(`Found ${comments.length} comment thread starters!`);
+  if (comments.length == 0) {
+    throw new Error("No comments found.")
+  }
+  return comments;
+};
+
+// helpers
+const ask = (query) => new Promise((resolve) => rl.question(query, resolve));
+const print = (query) => console.log(query);
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+// main code
+(async () => {
+  print(`Scratch Spam v${require("./package.json").version}`);
+  const userToCheck = await ask("What user would you like to check for spam? ");
+  let ready = false;
+  let pages = 1;
+  let comments = [];
+  while(!ready) {
+    try {
+      comments.push(...await getComments(userToCheck, pages));
+    } catch {
+      if (pages == 1) {
+        print("! Comments not found.")
+      } else {
+        print("No more comments able to be found.")
+        ready = true;
+        break;
+      }
+    }
+    
+    print(`Found ${comments.length} comment thread starters!`);
+    if (!((await(ask("Would you like to go to the next page? (Y/n) "))).toLowerCase() == "y")) {
+      ready = true;
+    };
+    pages++;
+  }
+  
   print("Starting checking...");
 
   let badComments = [];
@@ -67,6 +98,11 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     });
   });
   print(`${badComments.length} bad comment(s) found!`);
+  if (badComments.length == 0) {
+    print("Exiting program...")
+    rl.close();
+    return;
+  }
   print(
     "Please review the logs above to check if you would like to delete comments."
   );
