@@ -98,8 +98,8 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
         element.apiID
       )}`
     );
-    print("Waiting responsibly (7 seconds)...");
-    await sleep(7000);
+    print("Waiting responsibly (5 seconds)...");
+    await sleep(5000);
   });
   print(`Deleted ${badComments.length} comments!`);
   rl.close();
