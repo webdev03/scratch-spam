@@ -59,6 +59,6 @@ const print = (query) => console.log(query);
     rl.close();
     return;
   }
-  print("Getting ready to get rid of comments:")
+  print("Getting ready to get rid of comments...")
 	rl.close();
 })();
