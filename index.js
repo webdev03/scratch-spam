@@ -13,6 +13,7 @@ const rl = readline.createInterface({
 // helpers
 const ask = (query) => new Promise((resolve) => rl.question(query, resolve));
 const print = (query) => console.log(query);
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 // main code
 (async () => {
 	print(`Scratch Spam v${require("./package.json").version}`);
@@ -37,11 +38,11 @@ const print = (query) => console.log(query);
     const commentID = element.getElementsByClassName("comment")[0].id;
     const commentPoster = element.getElementsByClassName("comment")[0].getElementsByTagName("a")[0].getAttribute('data-comment-user');
     const commentContent = element.getElementsByClassName("comment")[0].getElementsByClassName("info")[0].getElementsByClassName("content")[0].innerHTML.trim();
-
 		comments.push({
 			id: commentID,
 			username: commentPoster,
 			content: commentContent,
+      apiID: commentID.substring(9)
 		});
 	}
 	print(`Found ${comments.length} comment thread starters!`);
@@ -67,5 +68,13 @@ const print = (query) => console.log(query);
   const session = new ScratchSession();
   await session.init(process.env['SCRATCH_USERNAME'], process.env['SCRATCH_PASSWORD']);
   print("Logged in!")
+  print("Deleting comments...")
+  badComments.forEach(async (element) => {
+    print(`Deleting comment "${element.content}" by ${element.username}...`)
+    print(`Deleted comment with status ${await session.deleteComment(element.apiID)}`);
+    print("Waiting responsibly (7 seconds)...")
+    await sleep(7000)
+  });
+  print(`Deleted ${badComments.length} comments!`)
 	rl.close();
 })();
