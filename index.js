@@ -70,6 +70,8 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     } catch {
       if (pages == 1) {
         print("! Comments not found.");
+        rl.close();
+        return;
       } else {
         print("No more comments able to be found.");
         ready = true;
