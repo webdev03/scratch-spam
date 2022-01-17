@@ -42,6 +42,6 @@ const print = (query) => console.log(query);
       }
     );
   };
-  print(`Found ${items.length} comments!`)
+  print(`Found ${comments.length} comments!`)
 	rl.close();
 })();
