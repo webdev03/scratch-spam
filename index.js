@@ -1,6 +1,7 @@
 const readline = require("readline");
 const fetch = require("cross-fetch");
 const { JSDOM } = require("jsdom");
+const disallowed = require("./disallow.json");
 const rl = readline.createInterface({
 	input: process.stdin,
 	output: process.stdout,
@@ -42,10 +43,11 @@ const print = (query) => console.log(query);
 	print(`Found ${comments.length} comments!`);
   print("Starting checking...");
   comments.forEach((comment) => {
-    // RTL override!
-    if (comment.content.includes("\u202E") || comment.content.includes("\u200B") || comment.content.includes("\u202D")) {
-      print(`${comment.username} posted "${comment.content}" which includes a disallowed char/string.`)
-    }
+    disallowed.forEach(element => {
+      if (comment.content.includes(element)) {
+        print(`${comment.username} posted "${comment.content}" which includes a disallowed char/string.`)
+      }
+    });
   });
 
 	rl.close();
