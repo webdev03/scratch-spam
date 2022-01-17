@@ -11,13 +11,13 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-const getComments = async(user, page = 1) => {
+const getComments = async (user, page = 1) => {
   const commentFetch = await fetch(
     `https://scratch.mit.edu/site-api/comments/user/${user}/?page=${page}`
   );
   if (!commentFetch.ok) {
     if (page == 1) {
-      throw new Error("! Error in fetching comments")
+      throw new Error("! Error in fetching comments");
     } else {
       return [];
     }
@@ -48,7 +48,7 @@ const getComments = async(user, page = 1) => {
     });
   }
   if (comments.length == 0) {
-    throw new Error("No comments found.")
+    throw new Error("No comments found.");
   }
   return comments;
 };
@@ -64,26 +64,32 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   let ready = false;
   let pages = 1;
   let comments = [];
-  while(!ready) {
+  while (!ready) {
     try {
-      comments.push(...await getComments(userToCheck, pages));
+      comments.push(...(await getComments(userToCheck, pages)));
     } catch {
       if (pages == 1) {
-        print("! Comments not found.")
+        print("! Comments not found.");
       } else {
-        print("No more comments able to be found.")
+        print("No more comments able to be found.");
         ready = true;
         break;
       }
     }
-    
+
     print(`Found ${comments.length} comment thread starters!`);
-    if (!((await(ask("Would you like to go to the next page? (Y/n) "))).toLowerCase() == "y")) {
+    if (
+      !(
+        (
+          await ask("Would you like to go to the next page? (Y/n) ")
+        ).toLowerCase() == "y"
+      )
+    ) {
       ready = true;
-    };
+    }
     pages++;
   }
-  
+
   print("Starting checking...");
 
   let badComments = [];
@@ -99,7 +105,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   });
   print(`${badComments.length} bad comment(s) found!`);
   if (badComments.length == 0) {
-    print("Exiting program...")
+    print("Exiting program...");
     rl.close();
     return;
   }
