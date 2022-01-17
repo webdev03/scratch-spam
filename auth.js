@@ -57,7 +57,7 @@ class ScratchSession {
           "x-requested-with": "XMLHttpRequest",
           Cookie: this.cookieSet,
 
-          referer: "https://scratch.mit.edu",
+          referer: `https://scratch.mit.edu/users/${this.username}`,
           "user-agent": "Mozilla/5.0 ScratchSpamProtection",
         },
       }
