@@ -10,7 +10,7 @@ const ask = (query) => new Promise((resolve) => rl.question(query, resolve));
 const print = (query) => console.log(query);
 
 // main code
-(async () => {
+const main = async () => {
 	print(`Scratch Spam v${require("./package.json").version}`);
 	const userToCheck = await ask("What user would you like to check for spam? ");
 	const commentFetch = await fetch(
@@ -44,4 +44,7 @@ const print = (query) => console.log(query);
   };
   print(`Found ${comments.length} comments!`)
 	rl.close();
-})();
+};
+main().catch(function(e) {
+  console.error(e.stack);
+});
