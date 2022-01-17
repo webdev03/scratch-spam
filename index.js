@@ -8,9 +8,8 @@ const rl = readline.createInterface({
 // helpers
 const ask = (query) => new Promise((resolve) => rl.question(query, resolve));
 const print = (query) => console.log(query);
-
 // main code
-const main = async () => {
+(async () => {
 	print(`Scratch Spam v${require("./package.json").version}`);
 	const userToCheck = await ask("What user would you like to check for spam? ");
 	const commentFetch = await fetch(
@@ -34,17 +33,20 @@ const main = async () => {
     const commentPoster = element.getElementsByClassName("comment")[0].getElementsByTagName("a")[0].getAttribute('data-comment-user');
     const commentContent = element.getElementsByClassName("comment")[0].getElementsByClassName("info")[0].getElementsByClassName("content")[0].innerHTML.trim();
 
-    comments.push(
-      {
-        id: commentID,
-        username: commentPoster,
-        content: commentContent
-      }
-    );
-  };
-  print(`Found ${comments.length} comments!`)
+		comments.push({
+			id: commentID,
+			username: commentPoster,
+			content: commentContent,
+		});
+	}
+	print(`Found ${comments.length} comments!`);
+  print("Starting checking...");
+  comments.forEach((comment) => {
+    // RTL override!
+    if (comment.content.includes("‮")) {
+      print(`${comment.username} posted "${comment.content}" which includes a disallowed char/string.`)
+    }
+  });
+
 	rl.close();
-};
-main().catch(function(e) {
-  console.error(e.stack);
-});
+})();
