@@ -45,7 +45,7 @@ class ScratchSession {
   }
   async deleteComment(id) {
     const delFetch = await fetch(
-      "https://scratch.mit.edu/site-api/comments/user/god286/del/",
+      `https://scratch.mit.edu/site-api/comments/user/${this.username}/del/`,
       {
         method: "POST",
         body: JSON.stringify({
