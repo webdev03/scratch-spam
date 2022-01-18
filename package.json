@@ -1,6 +1,6 @@
 {
   "name": "scratch-spam",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Scratch spam protection",
   "main": "index.js",
   "scripts": {
