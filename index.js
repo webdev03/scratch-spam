@@ -2,10 +2,9 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const readline = require("readline");
-const fs = require("fs")
-const fetch = require("cross-fetch");
-const { JSDOM } = require("jsdom");
-const { ScratchSession } = require("./auth.js");
+const fs = require("fs");
+const { ScratchSession } = require("meowclient");
+const session = new ScratchSession();
 const disallowed = JSON.parse(fs.readFileSync("disallow.json", "utf-8"));
 const rl = readline.createInterface({
   input: process.stdin,
@@ -13,41 +12,7 @@ const rl = readline.createInterface({
 });
 
 const getComments = async (user, page = 1) => {
-  const commentFetch = await fetch(
-    `https://scratch.mit.edu/site-api/comments/user/${user}/?page=${page}`
-  );
-  if (!commentFetch.ok) {
-    if (page == 1) {
-      throw new Error("! Error in fetching comments");
-    } else {
-      return [];
-    }
-  }
-  const commentHTML = await commentFetch.text();
-  const dom = new JSDOM(commentHTML);
-  const items = dom.window.document.getElementsByClassName("top-level-reply");
-
-  let comments = [];
-  for (let elID in items) {
-    const element = items[elID];
-    if (typeof element == "function") break;
-    const commentID = element.getElementsByClassName("comment")[0].id;
-    const commentPoster = element
-      .getElementsByClassName("comment")[0]
-      .getElementsByTagName("a")[0]
-      .getAttribute("data-comment-user");
-    const commentContent = element
-      .getElementsByClassName("comment")[0]
-      .getElementsByClassName("info")[0]
-      .getElementsByClassName("content")[0]
-      .innerHTML.trim();
-    comments.push({
-      id: commentID,
-      username: commentPoster,
-      content: commentContent,
-      apiID: commentID.substring(9),
-    });
-  }
+  const comments = await session.getProfile(user).getComments(page);
   if (comments.length == 0) {
     throw new Error("No comments found.");
   }
@@ -129,7 +94,6 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     return;
   }
   print("Getting ready to get rid of comments...");
-  const session = new ScratchSession();
   await session.init(
     process.env["SCRATCH_USERNAME"],
     process.env["SCRATCH_PASSWORD"]
@@ -139,12 +103,12 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   badComments.forEach(async (element) => {
     print(`Deleting comment "${element.content}" by ${element.username}...`);
     print(
-      `Deleted comment with status ${await session.deleteComment(
-        element.apiID
-      )}`
+      `Deleted comment with status ${await session
+        .getProfile(userToCheck)
+        .deleteComment(element.apiID)}`
     );
-    print("Waiting responsibly (5 seconds)...");
-    await sleep(5000);
+    print("Waiting responsibly (4 seconds)...");
+    await sleep(4000);
   });
   print(`Deleted ${badComments.length} comments!`);
   rl.close();
