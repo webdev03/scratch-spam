@@ -46,13 +46,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     }
 
     print(`Found ${comments.length} comment thread starters!`);
-    if (
-      !(
-        (
-          await ask("Would you like to go to the next page? (Y/n) ")
-        ).toLowerCase() == "y"
-      )
-    ) {
+    if (!((await ask("Would you like to go to the next page? (Y/n) ")).toLowerCase() == "y")) {
       ready = true;
     }
     pages++;
@@ -64,9 +58,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   comments.forEach((comment) => {
     disallowed.forEach((element) => {
       if (comment.content.includes(element)) {
-        print(
-          `${comment.username} posted "${comment.content}" which includes a disallowed char/string.`
-        );
+        print(`${comment.username} posted "${comment.content}" which includes a disallowed char/string.`);
         badComments.push(comment);
       }
     });
@@ -77,36 +69,19 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     rl.close();
     return;
   }
-  print(
-    "Please review the logs above to check if you would like to delete comments."
-  );
-  if (
-    !(
-      (
-        await ask(
-          "Ready to delete all comments? This may be a destructive action! (y/N) "
-        )
-      ).toLowerCase() == "y"
-    )
-  ) {
+  print("Please review the logs above to check if you would like to delete comments.");
+  if (!((await ask("Ready to delete all comments? This may be a destructive action! (y/N) ")).toLowerCase() == "y")) {
     print("You can always restart the script again if you would like.");
     rl.close();
     return;
   }
   print("Getting ready to get rid of comments...");
-  await session.init(
-    process.env["SCRATCH_USERNAME"],
-    process.env["SCRATCH_PASSWORD"]
-  );
+  await session.init(process.env["SCRATCH_USERNAME"], process.env["SCRATCH_PASSWORD"]);
   print("Logged in!");
   print("Deleting comments...");
   badComments.forEach(async (element) => {
     print(`Deleting comment "${element.content}" by ${element.username}...`);
-    print(
-      `Deleted comment with status ${await session
-        .getProfile(userToCheck)
-        .deleteComment(element.apiID)}`
-    );
+    print(`Deleted comment with status ${await session.getProfile(userToCheck).deleteComment(element.apiID)}`);
     print("Waiting responsibly (4 seconds)...");
     await sleep(4000);
   });
